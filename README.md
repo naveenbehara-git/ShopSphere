@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ShopSphere — Angular E-commerce Starter
 
 A responsive e-commerce storefront built with Angular standalone components. It includes product search, category filters, sorting, wishlist toggles, a shopping cart, quantity controls, and a cart drawer. Product data is local demo data; checkout is a demo interaction and is not connected to a payment provider or backend.
@@ -28,3 +29,6 @@ Build output is generated under `dist/shopsphere/browser`.
 
 ## Before production
 Connect a real product API and database, implement authentication and server-side authorization, add inventory/pricing validation, integrate a trusted payment provider, and configure tests and deployment.
+=======
+# ShopSphere
+>>>>>>> 04674297894be4fe660a34c04596d848a8b786ba
