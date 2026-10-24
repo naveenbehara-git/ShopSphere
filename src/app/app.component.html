@@ -1,0 +1,134 @@
+<header class="topbar">
+  <a class="brand" href="#" aria-label="ShopSphere home">
+    <span class="brand-mark"><span></span><span></span><span></span></span>
+    <span>shop<span class="brand-light">sphere</span><small>find your everyday</small></span>
+  </a>
+
+  <button class="location-button" type="button" aria-label="Delivery location">
+    <span class="pin">⌖</span><span class="location-copy"><small>Delivering to</small><strong>Hyderabad 500001</strong></span>
+  </button>
+
+  <form class="searchbar" (submit)="$event.preventDefault(); scrollToProducts()">
+    <select aria-label="Choose category" [ngModel]="selectedCategory" (ngModelChange)="setCategory($event)" name="searchCategory">
+      <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+    </select>
+    <input type="search" placeholder="Search products, brands and more..." [(ngModel)]="searchTerm" name="search" aria-label="Search products">
+    <button type="submit" aria-label="Search"><span class="search-icon">⌕</span></button>
+  </form>
+
+  <button class="account-button" type="button"><span class="account-icon">♙</span><span><small>Hello, shopper</small><strong>Account & Lists</strong></span><span class="chevron">⌄</span></button>
+  <button class="orders-button" type="button"><small>Returns</small><strong>& Orders</strong></button>
+  <button class="cart-button" type="button" (click)="cartOpen = true" aria-label="Open cart">
+    <span class="cart-symbol">🛒</span><span class="cart-count">{{ cartCount }}</span><strong>Cart</strong>
+  </button>
+</header>
+
+<nav class="subnav">
+  <button class="all-menu" type="button" (click)="mobileMenuOpen = !mobileMenuOpen"><span>☰</span> All</button>
+  <a href="#products" (click)="setCategory('All')">Today's Picks</a>
+  <a href="#products" (click)="setCategory('Electronics')">Electronics</a>
+  <a href="#products" (click)="setCategory('Home')">Home & Living</a>
+  <a href="#products" (click)="setCategory('Fashion')">Fashion</a>
+  <a href="#benefits">Customer Service</a>
+  <span class="nav-promo">✨ Little finds. Big joy.</span>
+</nav>
+
+<div class="mobile-categories" *ngIf="mobileMenuOpen">
+  <button *ngFor="let category of categories" (click)="setCategory(category)">{{ category }}</button>
+</div>
+
+<main>
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="eyebrow-dot"></span> THE EVERYDAY EDIT</div>
+      <h1>Good finds.<br><em>Great feelings.</em></h1>
+      <p>Thoughtful picks for your home, your plans, and everything in between.</p>
+      <button class="hero-cta" (click)="scrollToProducts()">Explore the collection <span>↗</span></button>
+      <div class="hero-proof"><span class="proof-stars">★★★★★</span><span>Loved by 20,000+ happy shoppers</span></div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-circle"></div>
+      <img class="hero-main-img" src="https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&fit=crop&w=900&q=85" alt="Minimal everyday sneakers">
+      <div class="floating-note"><span class="note-icon">✦</span><span><strong>Made for your everyday</strong><small>Small upgrades, big impact</small></span></div>
+      <div class="hero-side-label">CURATED FOR YOU · VOL. 08</div>
+    </div>
+    <div class="hero-bottomline"><span>NEW SEASON, NEW FAVORITES</span><span>SCROLL TO DISCOVER ↓</span></div>
+  </section>
+
+  <section class="benefits" id="benefits">
+    <div class="benefit"><span class="benefit-icon">↗</span><span><strong>Free delivery</strong><small>On orders over ₹999</small></span></div>
+    <div class="benefit"><span class="benefit-icon">↺</span><span><strong>Easy returns</strong><small>30-day return window</small></span></div>
+    <div class="benefit"><span class="benefit-icon">♧</span><span><strong>Thoughtfully picked</strong><small>Quality you can feel</small></span></div>
+    <div class="benefit"><span class="benefit-icon">♡</span><span><strong>Here to help</strong><small>Friendly support, always</small></span></div>
+  </section>
+
+  <section class="collection-section" id="products">
+    <div class="section-heading">
+      <div><div class="eyebrow section-eyebrow">YOUR NEXT FAVORITE</div><h2>Shop the collection<span>.</span></h2><p>Good design, useful details, and little things worth keeping.</p></div>
+      <div class="sort-wrap"><label for="sort">Sort by</label><select id="sort" [(ngModel)]="sortBy"><option value="featured">Featured</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="rating">Top rated</option></select></div>
+    </div>
+
+    <div class="category-pills">
+      <button *ngFor="let category of categories" [class.active]="selectedCategory === category" (click)="setCategory(category)">{{ category }}</button>
+    </div>
+
+    <div class="results-line"><span>{{ filteredProducts.length }} products to make your day</span><span *ngIf="searchTerm">Search: “{{ searchTerm }}” <button class="clear-search" (click)="searchTerm = ''">Clear ×</button></span></div>
+
+    <div class="product-grid" *ngIf="filteredProducts.length; else noProducts">
+      <article class="product-card" *ngFor="let product of filteredProducts">
+        <div class="product-image-wrap" [style.background]="product.color">
+          <span class="product-badge">{{ product.badge }}</span>
+          <button class="wishlist-button" [class.wished]="wishlist.has(product.id)" (click)="toggleWishlist(product.id)" [attr.aria-label]="wishlist.has(product.id) ? 'Remove from wishlist' : 'Add to wishlist'">{{ wishlist.has(product.id) ? '♥' : '♡' }}</button>
+          <img [src]="'https://images.unsplash.com/' + product.image + '?auto=format&fit=crop&w=650&q=80'" [alt]="product.name" loading="lazy">
+          <button class="quick-add" (click)="addToCart(product)">+ Quick add</button>
+        </div>
+        <div class="product-info">
+          <div class="product-category">{{ product.category }}</div>
+          <h3>{{ product.name }}</h3>
+          <div class="rating-row"><span class="stars">★★★★★</span><span class="rating-number">{{ product.rating }}</span><span class="review-count">({{ product.reviews.toLocaleString() }})</span></div>
+          <p class="product-description">{{ product.description }}</p>
+          <div class="price-row"><strong>{{ money(product.price) }}</strong><del>{{ money(product.oldPrice) }}</del><span class="save-tag">{{ ((product.oldPrice - product.price) / product.oldPrice * 100) | number:'1.0-0' }}% off</span></div>
+          <div class="delivery-note"><span>✓</span> Free delivery on eligible orders</div>
+          <button class="add-button" (click)="addToCart(product)">Add to cart <span>＋</span></button>
+        </div>
+      </article>
+    </div>
+    <ng-template #noProducts>
+      <div class="empty-state"><span>⌕</span><h3>No finds just yet</h3><p>Try another search or browse all products.</p><button (click)="searchTerm = ''; setCategory('All')">Show all products</button></div>
+    </ng-template>
+  </section>
+
+  <section class="newsletter">
+    <div class="newsletter-icon">✳</div><div><div class="eyebrow">A LITTLE GOOD IN YOUR INBOX</div><h2>Find your kind of good.</h2><p>Fresh finds, thoughtful ideas, and occasional treats. No noise.</p></div>
+    <form class="newsletter-form" (submit)="$event.preventDefault(); notice = 'Thanks for joining the ShopSphere demo list!';">
+      <input type="email" placeholder="Your email address" aria-label="Your email address" required><button type="submit">Count me in <span>→</span></button>
+    </form>
+  </section>
+</main>
+
+<footer>
+  <a class="brand footer-brand" href="#"><span class="brand-mark"><span></span><span></span><span></span></span><span>shop<span class="brand-light">sphere</span><small>find your everyday</small></span></a>
+  <p>Everyday essentials, thoughtfully found.</p>
+  <div class="footer-links"><a href="#products">Shop</a><a href="#benefits">Our promise</a><a href="mailto:hello@shopsphere.example">Contact</a><a href="#products">Privacy</a></div>
+  <div class="copyright">© 2026 ShopSphere. Demo storefront for learning and prototyping.</div>
+</footer>
+
+<div class="toast" *ngIf="notice"><span>✓</span>{{ notice }}<button (click)="notice = ''" aria-label="Dismiss">×</button></div>
+
+<div class="drawer-backdrop" *ngIf="cartOpen" (click)="cartOpen = false"></div>
+<aside class="cart-drawer" [class.open]="cartOpen" aria-label="Shopping cart" *ngIf="cartOpen">
+  <div class="drawer-header"><div><small>YOUR BAG</small><h2>Your cart <span>({{ cartCount }})</span></h2></div><button class="close-drawer" (click)="cartOpen = false" aria-label="Close cart">×</button></div>
+  <div class="cart-empty" *ngIf="cartItems.length === 0"><span>🛍</span><h3>Your cart is taking a little break</h3><p>Find something that feels just right.</p><button (click)="cartOpen = false; scrollToProducts()">Explore products</button></div>
+  <div class="cart-items" *ngIf="cartItems.length">
+    <div class="cart-item" *ngFor="let item of cartItems">
+      <img [src]="'https://images.unsplash.com/' + item.product.image + '?auto=format&fit=crop&w=200&q=75'" [alt]="item.product.name">
+      <div class="cart-item-info"><h3>{{ item.product.name }}</h3><strong>{{ money(item.product.price) }}</strong><div class="quantity-control"><button (click)="changeQuantity(item.product.id, -1)">−</button><span>{{ item.quantity }}</span><button (click)="changeQuantity(item.product.id, 1)">+</button></div></div>
+      <button class="remove-item" (click)="removeFromCart(item.product.id)" aria-label="Remove item">×</button>
+    </div>
+  </div>
+  <div class="drawer-summary" *ngIf="cartItems.length">
+    <div class="summary-line"><span>Subtotal</span><strong>{{ money(subtotal) }}</strong></div>
+    <div class="summary-line savings-line"><span>You save</span><strong>{{ money(savings) }}</strong></div>
+    <p>Shipping and taxes calculated at checkout.</p><button class="checkout-button" (click)="checkout()">Continue to checkout <span>→</span></button><small class="demo-note">Demo only · no payment will be processed</small>
+  </div>
+</aside>
